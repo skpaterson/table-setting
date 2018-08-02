@@ -4,3 +4,4 @@ bin*
 pip*
 *pytest*
 *pycache*
+*table_setting.db*

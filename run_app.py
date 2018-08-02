@@ -27,13 +27,41 @@ from flask_marshmallow import Marshmallow
 logger = logging.getLogger(__name__)
 
 
-def get_database_connection():
-    if 'db_mysql' in os.environ:
-        logger.info("Using MySQL DB as db_mysql in local environment")
-        return os.getenv('db_mysql')
+def get_config_parameter(env_var, default):
+    parameter = (os.getenv(env_var) or default)
+    logger.debug('Parameter %s = %s' % (env_var, parameter))
+    print(parameter)
+    return parameter
 
-    logger.info("Using in-memory sqlite database")
-    return 'sqlite://'
+
+def get_database_connection():
+    """ This uses environment variables to pass DB settings and defaults to in-memory sqlite.
+
+        For more info see, https://www.habitat.sh/docs/using-habitat/#config-updates
+        e.g. HAB_PACKAGENAME='{"keyname1":"newvalue1", "tablename1":{"keyname2":"newvalue2"}}'
+
+        DB_TYPE = sqlite_in_memory / sqlite_file / ...
+    """
+
+    db_type = get_config_parameter('DB_TYPE', 'sqlite_in_memory')
+    logger.info("Using %s database" % db_type)
+
+    if db_type == 'sqlite_in_memory':
+        return 'sqlite://'
+
+    if db_type == 'sqlite_file':
+        return 'sqlite:///table_setting.db'
+
+    if db_type == 'mysql':
+        # this is brittle, should revisit
+        db_user = get_config_parameter('DB_USER', 'root')
+        db_passwd = get_config_parameter('DB_PASSWD', '')
+        db_host = get_config_parameter('DB_HOST', '127.0.0.1')
+        db_port = get_config_parameter('DB_PORT', '3306')
+        db_name = get_config_parameter('DB_NAME', 'tablesetting')
+        return 'mysql://%s:%s@%s:%s/%s' % (db_user, db_passwd, db_host, db_port, db_name)
+
+    raise RuntimeError("Database type %s not recognised, exiting" % db_type)
 
 
 database = SQLAlchemy()
@@ -143,10 +171,8 @@ class ForkResource(Resource):
             database.session.commit()
             return {}, 204
 
+# todo: add an api endpoint to optionally reset the database
 
 if __name__ == '__main__':
-    port_number = 5000
-    if 'PORT' in os.environ:
-        port_number = int(os.environ['PORT'])
-
+    port_number = get_config_parameter('APP_PORT', 5000)
     app.run(debug=True, port=port_number)
