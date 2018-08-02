@@ -2,6 +2,7 @@
 
 Table Setting is a single file python web application built primarily for demonstration purposes.  The intent is to do something more realistic than typical 'hello world' examples.  As such Table Setting is a REST API currently allowing CRUD operations on forks.  When running, the Table Setting application exposes a Swagger UI:
 
+![swaggerui](images/table_setting_ui.png)
 
 Table setting is packaged using [Habitat](https://www.habitat.sh).
  
