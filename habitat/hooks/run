@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# redirect stderr
+exec 2>&1
+
+# for information only
+ls -al {{pkg.svc_data_path}}/{{pkg.name}}
+pip list
+# use the virtual env previously created
+source bin/activate
+# run the flask app
+exec python {{pkg.svc_data_path}}/{{pkg.name}}/run_app.py

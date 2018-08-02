@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# redirect stderr
+exec 2>&1
+
+# copy artifacts across
+exec cp -R {{pkg.path}}/{{pkg.name}} {{pkg.svc_data_path}}

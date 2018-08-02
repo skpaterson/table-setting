@@ -1,0 +1,6 @@
+results/
+lib*
+bin*
+pip*
+*pytest*
+*pycache*
