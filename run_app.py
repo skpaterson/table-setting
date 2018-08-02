@@ -30,7 +30,6 @@ logger = logging.getLogger(__name__)
 def get_config_parameter(env_var, default):
     parameter = (os.getenv(env_var) or default)
     logger.debug('Parameter %s = %s' % (env_var, parameter))
-    print(parameter)
     return parameter
 
 
