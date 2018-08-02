@@ -30,14 +30,15 @@ $ pytest -v test_app.py
 platform darwin -- Python 3.7.0, pytest-3.7.0, py-1.5.4, pluggy-0.7.1 -- /Users/skpaterson/table-setting/venv/bin/python
 cachedir: .pytest_cache
 rootdir: /Users/skpaterson/table-setting, inifile:
-collected 4 items
+collected 5 items                                                                                                                                                    
 
-test_app.py::test_get_forks PASSED                                                                                                                       [ 25%]
-test_app.py::test_create_read_delete_fork PASSED                                                                                                         [ 50%]
-test_app.py::test_create_update_delete_fork PASSED                                                                                                       [ 75%]
-test_app.py::test_create_multiple_forks PASSED                                                                                                           [100%]
+test_app.py::test_get_forks PASSED                                                                                                                             [ 20%]
+test_app.py::test_create_read_delete_fork PASSED                                                                                                               [ 40%]
+test_app.py::test_create_update_delete_fork PASSED                                                                                                             [ 60%]
+test_app.py::test_create_multiple_forks PASSED                                                                                                                 [ 80%]
+test_app.py::test_non_existing_fork_fails PASSED                                                                                                               [100%]
 
-=================================================================== 4 passed in 0.35 seconds ===================================================================
+====================================================================== 5 passed in 0.48 seconds ======================================================================
 
 ```
 

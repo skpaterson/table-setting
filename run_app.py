@@ -122,11 +122,11 @@ fork_request = api.model('Fork Request', {
 @fork_namespace.route('/', strict_slashes=False)
 class ForksResource(Resource):
 
-    @fork_namespace.response(200, 'Success')
+    @fork_namespace.response(200, 'Successfully retrieved all the forks')
     def get(self):
         return forks_schema.dump(ForkModel.query.all()).data, 200
 
-    @fork_namespace.response(201, 'Success')
+    @fork_namespace.response(201, 'Successfully created a fork')
     @fork_namespace.expect(fork_request, validate=True)
     def post(self):
         request_json = request.json
@@ -138,7 +138,7 @@ class ForksResource(Resource):
 
 @fork_namespace.route('/<id>')
 class ForkResource(Resource):
-    @fork_namespace.response(200, 'Success')
+    @fork_namespace.response(200, 'Successfully retrieved a fork')
     @fork_namespace.response(404, 'Fork does not exist')
     def get(self, id):
         fork = ForkModel.query.get(id)
@@ -147,7 +147,7 @@ class ForkResource(Resource):
         else:
             return {'message': 'Fork with id %s not found' % id}, 404
 
-    @fork_namespace.response(204, 'Fork updated')
+    @fork_namespace.response(204, 'Fork is updated')
     @fork_namespace.expect(fork_request, validate=True)
     def put(self, id):
         request_json = request.json
@@ -160,7 +160,7 @@ class ForkResource(Resource):
             database.session.commit()
             return {}, 204
 
-    @fork_namespace.response(204, 'Fork deleted')
+    @fork_namespace.response(204, 'Fork is deleted')
     def delete(self, id):
         fork = ForkModel.query.get(id)
         if not fork:
