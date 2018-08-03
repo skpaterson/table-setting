@@ -23,13 +23,31 @@ from flask_restplus import Api, Resource, fields
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, String, Integer
 from flask_marshmallow import Marshmallow
+from logging.config import dictConfig
+
+# simple default logging borrowed from http://flask.pocoo.org/docs/1.0/logging/
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+    }},
+    'handlers': {'wsgi': {
+        'class': 'logging.StreamHandler',
+        'stream': 'ext://flask.logging.wsgi_errors_stream',
+        'formatter': 'default'
+    }},
+    'root': {
+        'level': 'INFO',
+        'handlers': ['wsgi']
+    }
+})
 
 logger = logging.getLogger(__name__)
 
 
 def get_config_parameter(env_var, default):
     parameter = (os.getenv(env_var) or default)
-    logger.debug('Parameter %s = %s' % (env_var, parameter))
+    logger.info('Parameter %s = %s' % (env_var, parameter))
     return parameter
 
 
@@ -106,6 +124,7 @@ def create_database():
         database.create_all()
 
 
+# todo: inject info on the DB being used
 api = Api(app, version='0.0.1', title='Table Setting API',
           description='Swagger API for Table Setting, the best (and probably only) way to REST API your forks.'
           )
@@ -170,8 +189,8 @@ class ForkResource(Resource):
             database.session.commit()
             return {}, 204
 
-# todo: add an api endpoint to optionally reset the database
 
+# todo: add an api endpoint to optionally reset the database
 if __name__ == '__main__':
     port_number = get_config_parameter('APP_PORT', 5000)
     app.run(debug=True, port=port_number)

@@ -106,4 +106,4 @@ def test_non_existing_fork_fails(client):
     bad_fork = 'not-existing-fork-id'
     resp = client.get('/forks/%s' % bad_fork)
     assert resp.status_code == 404
-    assert json.loads(resp.data)["message"]=="Fork with id %s not found" %bad_fork
+    assert json.loads(resp.data)["message"] == "Fork with id %s not found" % bad_fork

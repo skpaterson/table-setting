@@ -13,15 +13,18 @@ do_build() {
 }
 
 do_install() {
-  # install/upgrade pip
-  python -m ensurepip --default-pip
-  pip install --upgrade pip
-  # copy across the one-file table-setting app
+  # copy across the one-file table-setting app plus requirements
   app_dir=$pkg_prefix/$pkg_name
   mkdir $app_dir
   cp run_app.py $app_dir/
   cp requirements.txt $app_dir/
-  # create a virtualenv and install dependencies
-  python -m venv .
-  bin/pip install -r $app_dir/requirements.txt
+  #install pip/virtualenv packages on top of python dependency (i.e. site packages)
+  pip install --upgrade pip
+  pip install virtualenv
+  # create virtualenv for our dependencies & install
+  virtualenv $app_dir/tsenv
+  source $app_dir/tsenv/bin/activate
+  pip install -r $app_dir/requirements.txt
+  # ensure hab user can activate the virtualenv
+  chown -R hab:hab $app_dir
 }
