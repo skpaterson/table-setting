@@ -143,9 +143,10 @@ def create_database():
     database.session.commit()
 
 
-# todo: inject info on the DB being used
+description = 'Swagger API for Table Setting, the best (and probably only) way to REST API your forks.'
+description += ' Running with a %s database.' % (get_config_parameter('DB_TYPE', 'sqlite_in_memory'))
 api = Api(app, version='0.0.1', title='Table Setting API',
-          description='Swagger API for Table Setting, the best (and probably only) way to REST API your forks.'
+          description=description
           )
 
 api.namespaces.clear()  # to remove the default namespace
