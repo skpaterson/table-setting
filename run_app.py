@@ -15,6 +15,9 @@
 import logging
 import os
 import uuid
+import sqlalchemy
+import warnings
+import re
 
 from flask import Flask
 from flask import request
@@ -22,6 +25,7 @@ from werkzeug.exceptions import NotFound
 from flask_restplus import Api, Resource, fields
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, String, Integer
+from sqlalchemy.engine import url as db_url
 from flask_marshmallow import Marshmallow
 from logging.config import dictConfig
 
@@ -47,6 +51,7 @@ logger = logging.getLogger(__name__)
 
 def get_config_parameter(env_var, default):
     parameter = (os.getenv(env_var) or default)
+    # note the below happily logs the DB connection information
     logger.info('Parameter %s = %s' % (env_var, parameter))
     return parameter
 
@@ -57,26 +62,31 @@ def get_database_connection():
         For more info see, https://www.habitat.sh/docs/using-habitat/#config-updates
         e.g. HAB_PACKAGENAME='{"keyname1":"newvalue1", "tablename1":{"keyname2":"newvalue2"}}'
 
-        DB_TYPE = sqlite_in_memory / sqlite_file / ...
+        DB_TYPE = ( sqlite_in_memory | sqlite_file | mysql )
     """
 
     db_type = get_config_parameter('DB_TYPE', 'sqlite_in_memory')
     logger.info("Using %s database" % db_type)
 
     if db_type == 'sqlite_in_memory':
-        return 'sqlite://'
+        return db_url.URL(drivername='sqlite')
 
     if db_type == 'sqlite_file':
-        return 'sqlite:///table_setting.db'
+        return db_url.URL(
+            drivername='sqlite',
+            database=get_config_parameter('DB_NAME', 'table_setting.db'),
+        )
 
     if db_type == 'mysql':
         # this is brittle, should revisit
-        db_user = get_config_parameter('DB_USER', 'root')
-        db_passwd = get_config_parameter('DB_PASSWD', '')
-        db_host = get_config_parameter('DB_HOST', '127.0.0.1')
-        db_port = get_config_parameter('DB_PORT', '3306')
-        db_name = get_config_parameter('DB_NAME', 'tablesetting')
-        return 'mysql://%s:%s@%s:%s/%s' % (db_user, db_passwd, db_host, db_port, db_name)
+        return db_url.URL(
+            drivername='mysql+mysqldb',
+            username=get_config_parameter('DB_USER', 'root'),
+            password=get_config_parameter('DB_PASSWD', ''),
+            host=get_config_parameter('DB_HOST', '127.0.0.1'),
+            port=get_config_parameter('DB_PORT', '3306'),
+            database=get_config_parameter('DB_NAME', 'tsdb'),
+        )
 
     raise RuntimeError("Database type %s not recognised, exiting" % db_type)
 
@@ -118,10 +128,19 @@ forks_schema = ForkSchema(many=True, only=only)
 
 @app.before_first_request
 def create_database():
-    # bootstrap DB if we are running in-memory mode
-    if 'db_mysql' not in os.environ:
-        logger.info('Bootstrapping in-memory DB')
-        database.create_all()
+    logger.info('Bootstrapping DB')
+    # create the DB if it doesn't already exist
+    conn = get_database_connection()
+    if re.search('mysql', conn.drivername):
+        db_name = conn.database
+        conn.database = ''
+        engine = sqlalchemy.create_engine(conn)  # connect to server
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            engine.execute("CREATE DATABASE IF NOT EXISTS %s" % db_name)  # create db
+
+    database.create_all()
+    database.session.commit()
 
 
 # todo: inject info on the DB being used
@@ -193,4 +212,5 @@ class ForkResource(Resource):
 # todo: add an api endpoint to optionally reset the database
 if __name__ == '__main__':
     port_number = get_config_parameter('APP_PORT', 5000)
-    app.run(debug=True, port=port_number)
+    flask_host = get_config_parameter('APP_HOST', '0.0.0.0')
+    app.run(debug=True, host=flask_host, port=port_number)

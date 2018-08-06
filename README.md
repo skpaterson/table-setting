@@ -30,16 +30,17 @@ $ pytest -v test_app.py
 platform darwin -- Python 3.7.0, pytest-3.7.0, py-1.5.4, pluggy-0.7.1 -- /Users/skpaterson/table-setting/venv/bin/python
 cachedir: .pytest_cache
 rootdir: /Users/skpaterson/table-setting, inifile:
-collected 5 items                                                                                                                                                    
+collected 7 items
 
-test_app.py::test_get_forks PASSED                                                                                                                             [ 20%]
-test_app.py::test_create_read_delete_fork PASSED                                                                                                               [ 40%]
-test_app.py::test_create_update_delete_fork PASSED                                                                                                             [ 60%]
-test_app.py::test_create_multiple_forks PASSED                                                                                                                 [ 80%]
-test_app.py::test_non_existing_fork_fails PASSED                                                                                                               [100%]
+test_app.py::test_get_forks PASSED                                                                                                                       [ 14%]
+test_app.py::test_create_read_delete_fork PASSED                                                                                                         [ 28%]
+test_app.py::test_create_update_delete_fork PASSED                                                                                                       [ 42%]
+test_app.py::test_create_multiple_forks PASSED                                                                                                           [ 57%]
+test_app.py::test_non_existing_fork_fails PASSED                                                                                                         [ 71%]
+test_app.py::test_creation_fails_invalid_schema PASSED                                                                                                   [ 85%]
+test_app.py::test_update_fails_invalid_schema PASSED                                                                                                     [100%]
 
-====================================================================== 5 passed in 0.48 seconds ======================================================================
-
+=================================================================== 7 passed in 0.45 seconds ===================================================================
 ```
 
 ## Building and running in the Habitat Studio

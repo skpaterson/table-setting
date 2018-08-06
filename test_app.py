@@ -107,3 +107,38 @@ def test_non_existing_fork_fails(client):
     resp = client.get('/forks/%s' % bad_fork)
     assert resp.status_code == 404
     assert json.loads(resp.data)["message"] == "Fork with id %s not found" % bad_fork
+
+
+def test_creation_fails_invalid_schema(client):
+    resp = client.post('/forks', data=json.dumps({'badname': 'first fork', 'prongs': 100}),
+                       headers={'content-type': 'application/json'})
+    assert resp.status_code == 400
+    response_data = json.loads(resp.data)
+    assert response_data == {'errors': {'name': "'name' is a required property"},
+                             'message': 'Input payload validation failed'}
+    resp = client.post('/forks', data=json.dumps({'name': 'first fork', 'badprongs': 100}),
+                       headers={'content-type': 'application/json'})
+    assert resp.status_code == 400
+    response_data = json.loads(resp.data)
+    assert response_data == {'errors': {'prongs': "'prongs' is a required property"},
+                             'message': 'Input payload validation failed'}
+
+
+def test_update_fails_invalid_schema(client):
+    resp = client.post('/forks', data=json.dumps({'name': 'puttyfork', 'prongs': 3}),
+                       headers={'content-type': 'application/json'})
+    assert resp.status_code == 201
+    fork_id = json.loads(resp.data)['id']
+    # now let's break our fork
+    resp = client.put('/forks/%s' % fork_id, data=json.dumps({'badname': 'forky2', 'prongs': 4}),
+                      headers={'content-type': 'application/json'})
+    assert resp.status_code == 400
+    response_data = json.loads(resp.data)
+    assert response_data == {'errors': {'name': "'name' is a required property"},
+                             'message': 'Input payload validation failed'}
+    resp = client.put('/forks/%s' % fork_id, data=json.dumps({'name': 'forky2', 'badprongs': 4}),
+                      headers={'content-type': 'application/json'})
+    assert resp.status_code == 400
+    response_data = json.loads(resp.data)
+    assert response_data == {'errors': {'prongs': "'prongs' is a required property"},
+                             'message': 'Input payload validation failed'}

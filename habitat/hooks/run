@@ -2,6 +2,29 @@
 
 # redirect stderr
 exec 2>&1
+
+# check for a bound DB service and set env vars accordingly
+# see - https://github.com/habitat-sh/core-plans/tree/master/mysql
+{{~ #if bind.database}}
+  {{~ #eachAlive bind.database.members as |member|}}
+    {{~ #if @first}}
+# First alive member
+export DB_HOST="${DB_HOST:={{member.sys.ip}}}"
+export DB_PORT="${DB_PORT:={{member.cfg.port}}}"
+export DB_USER="${DB_USER:={{member.cfg.app_username}}}"
+export DB_PASSWD="${DB_PASSWD:={{member.cfg.app_password}}}"
+    {{~ /if}}
+
+    {{~ #if member.leader}}
+# Leader node override
+export DB_HOST="${DB_HOST:={{member.sys.ip}}}"
+export DB_PORT="${DB_PORT:={{member.cfg.port}}}"
+export DB_USER="${DB_USER:={{member.cfg.app_username}}}"
+export DB_PASSWD="${DB_PASSWD:={{member.cfg.app_password}}}"
+    {{~ /if}}
+  {{~ /eachAlive}}
+{{~ /if}}
+
 # activate the virtual environment
 source {{pkg.svc_data_path}}/{{pkg.name}}/tsenv/bin/activate
 # run the flask app

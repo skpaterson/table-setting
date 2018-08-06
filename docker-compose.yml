@@ -1,0 +1,26 @@
+version: '3'
+services:
+    mysql:
+        image: core/mysql
+        # exposing mysql direct access for debugging purposes
+        ports:
+          - 3306:3306
+        environment:
+          HAB_MYSQL: |
+            bind = '0.0.0.0'
+            app_username = 'tablesetting'
+            app_password = 'tablesetting'
+            root_password = 'notverysecure'
+    tablesetting:
+        image: habskp/table-setting
+        ports:
+          - 8000:8000
+        environment:
+          - APP_PORT=8000
+          - DB_TYPE=mysql
+          - DB_USER=tablesetting
+          - DB_PASSWD=tablesetting
+        command: --peer mysql --bind database:mysql.default
+        restart: on-failure
+        depends_on:
+          - mysql
