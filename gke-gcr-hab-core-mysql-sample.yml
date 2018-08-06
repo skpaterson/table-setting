@@ -1,0 +1,57 @@
+---
+apiVersion: habitat.sh/v1beta1
+kind: Habitat
+metadata:
+  name: database
+  labels:
+    app: table-setting-hab-db
+customVersion: v1beta2
+spec:
+  v1beta2:
+    image: eu.gcr.io/spaterson-project/mysql:latest
+    count: 1
+    env:
+      - name: HAB_MYSQL
+        value: "bind = '0.0.0.0'\napp_username = 'tablesetting'\napp_password = 'tablesetting'\nroot_password = 'notverysecure'"
+    service:
+      name: mysql
+      topology: standalone
+---
+apiVersion: habitat.sh/v1beta1
+kind: Habitat
+metadata:
+  name: table-setting-app
+  labels:
+    app: table-setting-hab
+customVersion: v1beta2
+spec:
+  v1beta2:
+    image: eu.gcr.io/spaterson-project/table-setting:latest
+    count: 1
+    env:
+      - name: DB_TYPE
+        value: mysql
+      - name: DB_USER
+        value: tablesetting
+      - name: DB_PASSWD
+        value: tablesetting
+    service:
+      name: table-setting
+      topology: standalone
+      bind:
+        - name: database
+          service: mysql
+          group: default
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: table-setting-lb
+spec:
+  type: LoadBalancer
+  selector:
+    habitat-name: table-setting-app
+  ports:
+  - port: 80
+    targetPort: 5000
