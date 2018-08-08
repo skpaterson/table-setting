@@ -7,21 +7,22 @@ exec 2>&1
 # see - https://github.com/habitat-sh/core-plans/tree/master/mysql
 {{~ #if bind.database}}
   {{~ #eachAlive bind.database.members as |member|}}
-    {{~ #if @first}}
-# First alive member
+    {{~ #if member.leader}}
+# Leader node override - only if vars are not already defined
 export DB_HOST="${DB_HOST:={{member.sys.ip}}}"
 export DB_PORT="${DB_PORT:={{member.cfg.port}}}"
 export DB_USER="${DB_USER:={{member.cfg.app_username}}}"
 export DB_PASSWD="${DB_PASSWD:={{member.cfg.app_password}}}"
     {{~ /if}}
 
-    {{~ #if member.leader}}
-# Leader node override
+    {{~ #if @first}}
+# otherwise first alive member - only if vars are not already defined or leader set as above
 export DB_HOST="${DB_HOST:={{member.sys.ip}}}"
 export DB_PORT="${DB_PORT:={{member.cfg.port}}}"
 export DB_USER="${DB_USER:={{member.cfg.app_username}}}"
 export DB_PASSWD="${DB_PASSWD:={{member.cfg.app_password}}}"
     {{~ /if}}
+
   {{~ /eachAlive}}
 {{~ /if}}
 
