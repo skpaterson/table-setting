@@ -13,7 +13,8 @@ The main prerequisite for Table Setting is having a 3.x version of [python insta
 ```bash
 $ git clone https://github.com/skpaterson/table-setting
 $ cd table-setting
-# If the next command fails it will probably be due to python2* being in your PATH.  As a quick alternative, could try "python3.7 -m venv tsenv" instead. 
+# If the next command fails it will probably be due to python2* being in your PATH.  
+# As a quick alternative, could try "python3.7 -m venv tsenv" instead, or prepend 3.* to the PATH environment variable. 
 $ python -m venv tsenv
 $ . tsenv/bin/activate
 $ pip install -r requirements.txt
