@@ -21,6 +21,8 @@ $ pip install -r requirements.txt
 $ python run_app.py 
 ```
 
+Navigate to [http://locahost:5000](http://localhost:5000) to see the UI.
+
 ## Testing Table Setting
 
 Table Setting has a `requirements-dev.txt` file for development dependencies.   Assuming a virtualenv has already been activated, run the following from the root of the repository:
