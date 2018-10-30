@@ -19,7 +19,7 @@ podTemplate(label: label, containers: [
                 sh '. tsenv/bin/activate && pip install -r requirements-dev.txt && pip list'
             }
             stage('Test python application') {
-                sh '. tsenv/bin/activate pytest -v test_app.py'
+                sh '. tsenv/bin/activate && pytest -v test_app.py'
             }
         }
     }
