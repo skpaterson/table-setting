@@ -11,11 +11,11 @@ podTemplate(label: label, containers: [
             stage('Build Information') {
                 sh 'pwd'
                 sh 'ls -al'
+                sh 'echo $PATH'
+                sh 'ls -al /usr/bin'
             }
             stage('Install python dependencies') {
-                sh 'ls -al /usr/local/bin'
-                sh 'echo $PATH'
-                sh '/usr/local/bin/python3.7 -m venv tsenv'
+                sh 'python3.7 -m venv tsenv'
                 sh '. tsenv/bin/activate && pip install wheel && pip install setuptools --upgrade && pip install -r requirements-dev.txt && pip list'
             }
             stage('Test python application') {
