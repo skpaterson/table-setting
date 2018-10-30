@@ -1,22 +1,26 @@
 def label = "mypod-${UUID.randomUUID().toString()}"
 podTemplate(label: label, containers: [
-    containerTemplate(name: 'python27', image: 'gcr.io/spaterson-project/jenkins-python27:latest', ttyEnabled: true, command: 'cat'),
+    containerTemplate(name: 'python3', image: 'gcr.io/spaterson-project/jenkins-python3:latest', ttyEnabled: true, command: 'cat'),
   ]) {
 
     node(label) {
         stage('Checkout code') {
             checkout scm
         }
-        stage('Try and use python image') {
-            container('python27') {
-                stage('Build a python project') {
-                    sh 'pwd'
-                    sh 'ls -al'
-                    sh 'which pip'
-                    sh 'python --version'
-                    sh 'pip install -r requirements-dev.txt'
-                    sh 'pytest test_app.py'
-                }
+        container('python3') {
+            stage('Build Information') {
+                sh 'pwd'
+                sh 'ls -al'
+                sh 'which pip'
+                sh 'python3 --version'
+            }
+            stage('Install python dependencies') {
+                sh 'python3 -m venv tsenv'
+                sh '. tsenv/bin/activate'
+                sh 'pip install -r requirements-dev.txt'
+            }
+            stage('Test python application') {
+                sh 'pytest -v test_app.py'
             }
         }
     }
