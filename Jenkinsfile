@@ -11,7 +11,7 @@ podTemplate(label: label, containers: [
             stage('Build Information') {
                 sh 'pwd'
                 sh 'ls -al'
-                sh 'which pip'
+                sh 'which pip3'
                 sh 'python3 --version'
             }
             stage('Install python dependencies') {
