@@ -13,10 +13,10 @@ podTemplate(label: label, containers: [
                 sh 'ls -al'
             }
             stage('Install python dependencies') {
-                sh 'python3.7 -m venv tsenv'
-                sh 'pip install wheel' 
-                sh 'pip install setuptools --upgrade'
-                sh '. tsenv/bin/activate && pip install -r requirements-dev.txt && pip list'
+                sh 'ls -al /usr/local/bin'
+                sh 'echo $PATH'
+                sh '/usr/local/bin/python3.7 -m venv tsenv'
+                sh '. tsenv/bin/activate && pip install wheel && pip install setuptools --upgrade && pip install -r requirements-dev.txt && pip list'
             }
             stage('Test python application') {
                 sh '. tsenv/bin/activate && pytest -v test_app.py'
