@@ -15,6 +15,8 @@ podTemplate(label: label, containers: [
                 sh 'python3 --version'
             }
             stage('Install python dependencies') {
+                sh 'pip3 install wheel'
+                sh 'pip3 install setuptools --upgrade'
                 sh 'python3 -m venv tsenv'
                 sh '. tsenv/bin/activate && pip install -r requirements-dev.txt && pip list'
             }
