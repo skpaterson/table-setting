@@ -11,13 +11,11 @@ podTemplate(label: label, containers: [
             stage('Build Information') {
                 sh 'pwd'
                 sh 'ls -al'
-                sh 'which pip3'
-                sh 'python3 --version'
             }
             stage('Install python dependencies') {
-                sh 'pip3 install wheel'
-                sh 'pip3 install setuptools --upgrade'
-                sh 'python3 -m venv tsenv'
+                sh 'python3.7 -m venv tsenv'
+                sh 'pip install wheel' 
+                sh 'pip install setuptools --upgrade'
                 sh '. tsenv/bin/activate && pip install -r requirements-dev.txt && pip list'
             }
             stage('Test python application') {
