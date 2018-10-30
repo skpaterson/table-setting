@@ -16,11 +16,10 @@ podTemplate(label: label, containers: [
             }
             stage('Install python dependencies') {
                 sh 'python3 -m venv tsenv'
-                sh '. tsenv/bin/activate'
-                sh 'pip install -r requirements-dev.txt'
+                sh '. tsenv/bin/activate && pip install -r requirements-dev.txt && pip list'
             }
             stage('Test python application') {
-                sh 'pytest -v test_app.py'
+                sh '. tsenv/bin/activate pytest -v test_app.py'
             }
         }
     }
