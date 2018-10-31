@@ -17,21 +17,30 @@ spec:
   }
   stages {
     stage('Checkout code') {
-        checkout scm
+        steps  {
+            checkout scm
+        }
     }
     container('python3') {
         stage('Build Information') {
-            sh 'pwd'
-            sh 'ls -al'
-            sh 'echo $PATH'
-            sh 'ls -al /usr/bin'
+            steps {
+                script {
+                    pwd
+                    ls -al
+                    echo $PATH 
+                }
+            }
         }
         stage('Install python dependencies') {
-            sh 'python3.7 -m venv tsenv'
-            sh '. tsenv/bin/activate && pip install wheel && pip install setuptools --upgrade && pip install -r requirements-dev.txt && pip list'
+            steps {
+                sh 'python3.7 -m venv tsenv'
+                sh '. tsenv/bin/activate && pip install wheel && pip install setuptools --upgrade && pip install -r requirements-dev.txt && pip list'
+            }
         }
         stage('Test python application') {
-            sh '. tsenv/bin/activate && pytest -v test_app.py'
+            steps {
+                sh '. tsenv/bin/activate && pytest -v test_app.py'
+            }
         }
     }
   }
