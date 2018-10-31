@@ -21,24 +21,28 @@ spec:
             checkout scm
         }
     }
-    container('python3') {
-        stage('Build Information') {
-            steps {
+    stage('Build Information') {
+        steps {
+            container('python3') {
                 script {
                     pwd
                     ls -al
-                    echo $PATH 
+                    echo $PATH
                 }
             }
         }
-        stage('Install python dependencies') {
-            steps {
+    }
+    stage('Install python dependencies') {
+        steps {
+            container('python3') {
                 sh 'python3.7 -m venv tsenv'
                 sh '. tsenv/bin/activate && pip install wheel && pip install setuptools --upgrade && pip install -r requirements-dev.txt && pip list'
             }
         }
-        stage('Test python application') {
-            steps {
+    }
+    stage('Test python application') {
+        steps {
+            container('python3') {
                 sh '. tsenv/bin/activate && pytest -v test_app.py'
             }
         }
