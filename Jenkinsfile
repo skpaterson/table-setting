@@ -16,11 +16,6 @@ spec:
     }
   }
   stages {
-    stage('Checkout code') {
-        steps  {
-            checkout scm
-        }
-    }
     stage('Build Information') {
         steps {
             container('python3') {
