@@ -1,4 +1,4 @@
-def pod_label = "mypod-${UUID.randomUUID().toString()}"
+def pod_label = "table-setting-${UUID.randomUUID().toString()}"
 pipeline {
   agent {
     kubernetes {
