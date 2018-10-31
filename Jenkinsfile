@@ -24,11 +24,9 @@ spec:
     stage('Build Information') {
         steps {
             container('python3') {
-                script {
-                    pwd
-                    ls -al
-                    echo $PATH
-                }
+                sh 'pwd'
+                sh 'ls -al'
+                sh 'echo $PATH'
             }
         }
     }
