@@ -41,6 +41,9 @@ spec:
         }
     }
   }
+  triggers {
+    cron 'H 8 * * 1-5'
+  }
   post {
     success {
         slackSend color: 'good', message: "The pipeline ${currentBuild.fullDisplayName} completed successfully.  Details <${env.BUILD_URL}|Details here>."
