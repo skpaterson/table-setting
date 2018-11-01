@@ -46,7 +46,7 @@ spec:
   }
   post {
     success {
-        slackSend color: 'good', message: "The pipeline ${currentBuild.fullDisplayName} completed successfully.  Details <${env.BUILD_URL}|Details here>."
+        slackSend color: 'good', message: "The pipeline ${currentBuild.fullDisplayName} completed successfully. <${env.BUILD_URL}|Details here>."
     }
     failure {
         slackSend color: 'danger', message: "Pipeline failure ${currentBuild.fullDisplayName}. Please <${env.BUILD_URL}|resolve issues here>."
