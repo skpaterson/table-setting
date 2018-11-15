@@ -5,3 +5,4 @@ pip*
 *pytest*
 *pycache*
 *table_setting.db*
+*coverage_html*

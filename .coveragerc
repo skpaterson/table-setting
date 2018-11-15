@@ -1,0 +1,7 @@
+[run]
+omit =
+    test_*
+    *venv*
+    *tsenv*
+[html]
+directory = coverage_html

@@ -36,7 +36,7 @@ spec:
     stage('Test python application') {
         steps {
             container('python3') {
-                sh '. tsenv/bin/activate && pytest -v test_app.py'
+                sh '. tsenv/bin/activate && pytest'
             }
         }
     }
@@ -47,6 +47,7 @@ spec:
   post {
     success {
         slackSend color: 'good', message: "The pipeline ${currentBuild.fullDisplayName} completed successfully. <${env.BUILD_URL}|Details here>."
+        publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'coverage_html', reportFiles: 'index.html', reportName: 'Coverage Report', reportTitles: ''])
     }
     failure {
         slackSend color: 'danger', message: "Pipeline failure ${currentBuild.fullDisplayName}. Please <${env.BUILD_URL}|resolve issues here>."
