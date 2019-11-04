@@ -9,7 +9,7 @@ kind: Pod
 spec:
   containers:
   - name: python3
-    image: gcr.io/spaterson-project/jenkins-python3-build:latest
+    image: gcr.io/spaterson-project/jenkins-python3-b2
     command: ['cat']
     tty: true
 """
