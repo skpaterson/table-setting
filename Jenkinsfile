@@ -29,7 +29,7 @@ spec:
         steps {
             container('python3') {
                 sh 'python3.7 -m venv tsenv'
-                sh '. tsenv/bin/activate && pip install wheel && pip install setuptools --upgrade && pip install -r requirements-dev.txt && pip list'
+                sh '. tsenv/bin/activate && pip install wheel && pip install setuptools --upgrade && pip install --upgrade pip && pip install -r requirements-dev.txt && pip list'
             }
         }
     }
