@@ -17,4 +17,4 @@ pyflakes==1.6.0
 pytz==2018.5
 six==1.11.0
 SQLAlchemy==1.3.0
-Werkzeug==0.15.3
+Werkzeug==2.2.3
